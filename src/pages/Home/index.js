@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { BlogItem, Button, Gap } from '../../components'
 import './home.scss';
 import {useHistory} from 'react-router-dom';
@@ -6,31 +6,21 @@ import Axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 
 const Home = () => {
-    //component dinamis with state lokal
-    // const [dataBlog, setDataBlog] = useState([]);
-    
-    //menggunakan useSelector karena menggunakan function untuk page Home
-    //state global
-    const {dataBlogs, name} = useSelector(state => state);
+    const {dataBlog} = useSelector(state => state.homeReducer);
     const dispatch = useDispatch();
 
     useEffect(() => {
         Axios.get('http://localhost:4000/v1/blog/posts')
         .then(result => {
-            setTimeout(() => {
-                dispatch({type:'UPDATE_NAME'})
-            },3000)
-
             const responseAPI = result.data;
 
-            //set datablog from state lokal
-            // setDataBlog(responseAPI.data);
             dispatch({type: 'UPDATE_DATA_BLOG', payload: responseAPI.data})
         })
         .catch(err => {
             console.log('error:',err)
         })
     },[])
+
     const history = useHistory();
 
     return (
@@ -38,10 +28,9 @@ const Home = () => {
             <div className="create-wrapper">
                 <Button title="Create Blog" onClick={() => history.push('/create-blog')}/>
             </div>
-            <p>{name}</p>
             <Gap height={20}/>
             <div className="content-wrapper">
-                {dataBlogs.map(blog => {
+                {dataBlog.map(blog => {
                     return <BlogItem 
                     key={blog._id}
                     image={`http://localhost:4000/${blog.image}`}

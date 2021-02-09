@@ -6,7 +6,7 @@ import { Button, Gap } from '../../atoms';
 const BlogItem = (props) => {
     const history = useHistory();
     //destructuring
-    const {image, title, name, date, body} = props;
+    const {image, title, name, date, body, _id} = props;
     return (
         <div className="blog-item">
             <img className="image-thumb" src={image}/>
@@ -15,7 +15,7 @@ const BlogItem = (props) => {
                 <p className="author">{name} - {date}</p>
                 <p className="body">{body}</p>
                 <Gap height={20}/>
-                <Button title="View Detail" onClick={() => history.push('/detail-blog')}/>
+                <Button title="View Detail" onClick={() => history.push(`/detail-blog/${props._id}`)}/>
             </div>
         </div>
     )

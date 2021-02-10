@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { BlogItem, Button, Gap } from '../../components'
 import './home.scss';
 import {useHistory} from 'react-router-dom';
-import Axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDataBlog } from '../../config/redux/action';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import Axios from 'axios';
 
 const Home = () => {
     const [counter, setCounter] = useState(1); 
@@ -25,6 +27,31 @@ const Home = () => {
         setCounter(counter === page.totalPage ? page.totalPage : counter + 1);
     }
 
+    const confirmDelete = (id) => {
+        confirmAlert({
+            title: 'Confirm to delete',
+            message: 'Apakah anda yakin ingin menghapus post ini?',
+            buttons: [
+              {
+                label: 'Ya',
+                onClick: () => {
+                    Axios.delete(`http://localhost:4000/v1/blog/post/${id}`)
+                    .then(res => {
+                        dispatch(setDataBlog(counter));
+                    })
+                    .catch(err => {
+                        console.log("Error", err)
+                    })
+                }
+              },
+              {
+                label: 'Tidak',
+                onClick: () => console.log('user tidak setuju')
+              }
+            ]
+          });
+    }
+
     return (
         <div className="home-page-wrapper">
             <div className="create-wrapper">
@@ -40,7 +67,8 @@ const Home = () => {
                     body={blog.body}
                     name={blog.author.name}
                     date={blog.createdAt}
-                    _id={blog._id}/>
+                    _id={blog._id}
+                    onDelete={confirmDelete}/>
                 })}
             </div>
             <div className="pagination">

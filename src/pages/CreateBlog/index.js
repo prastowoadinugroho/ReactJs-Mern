@@ -20,7 +20,6 @@ const CreateBlog = (props) => {
             Axios.get(`http://localhost:4000/v1/blog/post/${id}`)
             .then(res => {
                 const data = res.data.data;
-                console.log("Success: ", data);
                 dispatch(setForm('title', data.title));
                 dispatch(setForm('body', data.body));
                 dispatch(setImgPreview(`http://localhost:4000/${data.image}`));
@@ -29,14 +28,10 @@ const CreateBlog = (props) => {
                 console.log("Error", err)
             })
         }
-    },[props])
-
-    useEffect(() => {
-        const id = props.match.params.id;
-        if(!id){
-                dispatch(setForm('title', ''));
-                dispatch(setForm('body', ''));
-                dispatch(setImgPreview(''));
+        else {
+            dispatch(setForm('title', ''));
+            dispatch(setForm('body', ''));
+            dispatch(setImgPreview(''));
         }
     },[props])
 
@@ -57,6 +52,7 @@ const CreateBlog = (props) => {
         dispatch(setForm('image',file));
         dispatch(setImgPreview(URL.createObjectURL(file)));
     }
+    
     return (
         <div className="blog-post">
             <Link title = "kembali" onClick={() => history.push('/')}/>
